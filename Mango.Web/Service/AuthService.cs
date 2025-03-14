@@ -31,7 +31,7 @@ namespace Mango.Web.Service
                 Data = loginRequestDto,
                 ApiUrl = SD.AuthAPIBase + "/api/auth/Login"
 
-            });
+            }, withBearer: false);
         }
 
         public async Task<ResponseDto?> RegisterAsync(RegistrationRequestDto registrationRequestDto)
@@ -42,7 +42,7 @@ namespace Mango.Web.Service
                 Data = registrationRequestDto,
                 ApiUrl = SD.AuthAPIBase + "/api/auth/Register"
 
-            });
+            }, withBearer: false);
         }
     }
 }
