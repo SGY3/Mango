@@ -7,12 +7,12 @@ namespace Mango.Services.AuthAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthAPIController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
         protected ResponseDto _response;
 
-        public AuthAPIController(IAuthService authService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
             _response = new();
