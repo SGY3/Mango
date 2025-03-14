@@ -32,8 +32,8 @@ builder.Services.AddSwaggerGen(option =>
 {
     option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
     {
-        Name = "Authrization",
-        Description = "Enter the Bearer Autherization string as following: `Bearer Generated-KWT-Token`",
+        Name = "Authorization",
+        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-KWT-Token`",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
