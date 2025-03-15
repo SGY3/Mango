@@ -41,7 +41,7 @@ namespace Mango.Web.Service
             });
         }
 
-        public async Task<ResponseDto?> GetProductByIdAsync(string productId)
+        public async Task<ResponseDto?> GetProductByIdAsync(int productId)
         {
             return await _baseservice.SendAsync(new RequestDto()
             {
