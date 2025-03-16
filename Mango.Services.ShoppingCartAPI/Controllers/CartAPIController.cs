@@ -18,13 +18,15 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         private IMapper _mapper;
         private readonly ApplicationDbContext _context;
         private readonly IProductService _productService;
+        private readonly ICouponService _couponService;
 
-        public CartAPIController(ResponseDto response, IMapper mapper, ApplicationDbContext context, IProductService productService)
+        public CartAPIController(ResponseDto response, IMapper mapper, ApplicationDbContext context, IProductService productService, ICouponService couponService)
         {
             _response = response;
             _mapper = mapper;
             _context = context;
             _productService = productService;
+            _couponService = couponService;
         }
 
         [HttpGet("GetCart/{userId}")]
@@ -46,6 +48,18 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                     item.Product = productDtos.FirstOrDefault(u => u.ProductId == item.ProductId);
                     cart.CartHeader.CartTotal += (item.Count * item.Product.Price);
                 }
+
+                //Apply Coupon if any
+                if (!string.IsNullOrEmpty(cart.CartHeader.CouponCode))
+                {
+                    CouponDto coupon = await _couponService.GetCoupon(cart.CartHeader.CouponCode);
+                    if (coupon != null && cart.CartHeader.CartTotal > coupon.MinAmount)
+                    {
+                        cart.CartHeader.CartTotal -= coupon.DiscountAmount;
+                        cart.CartHeader.Discount = coupon.DiscountAmount;
+                    }
+                }
+
                 _response.Result = cart;
             }
             catch (Exception ex)
@@ -61,7 +75,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                var cardFromDb= await _context.CartHeaders.FirstAsync(u=>u.UserId==cartDto.CartHeader.UserId);
+                var cardFromDb = await _context.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
                 cardFromDb.CouponCode = cartDto.CartHeader.CouponCode;
                 _context.CartHeaders.Update(cardFromDb);
                 await _context.SaveChangesAsync();
@@ -79,7 +93,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                var cardFromDb= await _context.CartHeaders.FirstAsync(u=>u.UserId==cartDto.CartHeader.UserId);
+                var cardFromDb = await _context.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
                 cardFromDb.CouponCode = "";
                 _context.CartHeaders.Update(cardFromDb);
                 await _context.SaveChangesAsync();
