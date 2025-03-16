@@ -28,7 +28,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                var cartHearderFromDb = await _context.CartHeaders.FirstOrDefaultAsync(u => u.UserId == cartDto.CartHeader.UserId);
+                var cartHearderFromDb = await _context.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == cartDto.CartHeader.UserId);
                 if (cartHearderFromDb == null)
                 {
                     //create header and details
@@ -43,7 +43,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                 {
                     //if header is not null
                     //check if details has some product
-                    var cartDetailsFromDb = await _context.CartDetails.FirstOrDefaultAsync(
+                    var cartDetailsFromDb = await _context.CartDetails.AsNoTracking().FirstOrDefaultAsync(
                         u => u.ProductId == cartDto.CartDetails.First().ProductId &&
                         u.CartHeaderId == cartHearderFromDb.CardHeaderId);
                     if (cartDetailsFromDb == null)
