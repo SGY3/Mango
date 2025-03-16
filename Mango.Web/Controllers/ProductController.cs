@@ -52,6 +52,32 @@ namespace Mango.Web.Controllers
             return View(productDto);
         }
         [HttpGet]
+        public async Task<IActionResult> ProductEdit(int productId)
+        {
+            ResponseDto? responseDto = await _productService.GetProductByIdAsync(productId);
+            if (responseDto != null && responseDto.IsSuccess)
+            {
+                ProductDto? model = JsonConvert.DeserializeObject<ProductDto>(responseDto.Result.ToString());
+                return View(model);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ProductEdit(ProductDto productDto)
+        {
+            ResponseDto? responseDto = await _productService.UpdateProductAsync(productDto);
+            if (responseDto != null && responseDto.IsSuccess)
+            {
+                TempData["success"] = "Product updated successfully.";
+                return RedirectToAction(nameof(ProductIndex));
+            }
+            else
+            {
+                TempData["error"] = responseDto?.Message;
+            }
+            return View(productDto);
+        }
+        [HttpGet]
         public async Task<IActionResult> ProductDelete(int productId)
         {
             ResponseDto? responseDto = await _productService.GetProductByIdAsync(productId);
@@ -65,10 +91,10 @@ namespace Mango.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProductDelete(ProductDto productDto)
         {
-            ResponseDto? responseDto = await _productService.GetProductByIdAsync(productDto.ProductId);
+            ResponseDto? responseDto = await _productService.DeleteProductAsync(productDto.ProductId);
             if (responseDto != null && responseDto.IsSuccess)
             {
-                TempData["success"] = "Coupon deleted successfully.";
+                TempData["success"] = "Product deleted successfully.";
                 return RedirectToAction(nameof(ProductIndex));
             }
             else
