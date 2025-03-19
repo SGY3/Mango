@@ -119,7 +119,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                     CartHeader cartHeader = _mapper.Map<CartHeader>(cartDto.CartHeader);
                     _context.CartHeaders.Add(cartHeader);
                     await _context.SaveChangesAsync();
-                    cartDto.CartDetails.First().CartHeaderId = cartHeader.CardHeaderId;
+                    cartDto.CartDetails.First().CartHeaderId = cartHeader.CartHeaderId;
                     _context.CartDetails.Add(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
                     await _context.SaveChangesAsync();
                 }
@@ -129,11 +129,11 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                     //check if details has some product
                     var cartDetailsFromDb = await _context.CartDetails.AsNoTracking().FirstOrDefaultAsync(
                         u => u.ProductId == cartDto.CartDetails.First().ProductId &&
-                        u.CartHeaderId == cartHearderFromDb.CardHeaderId);
+                        u.CartHeaderId == cartHearderFromDb.CartHeaderId);
                     if (cartDetailsFromDb == null)
                     {
                         //create cardDetails
-                        cartDto.CartDetails.First().CartHeaderId = cartHearderFromDb.CardHeaderId;
+                        cartDto.CartDetails.First().CartHeaderId = cartHearderFromDb.CartHeaderId;
                         _context.CartDetails.Add(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
                         await _context.SaveChangesAsync();
                     }
@@ -167,7 +167,7 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
                 _context.CartDetails.Remove(cartDetails);
                 if (totalCountOfCartItem == 1)
                 {
-                    var cartHeaderToRemove = await _context.CartHeaders.FirstOrDefaultAsync(u => u.CardHeaderId == cartDetails.CartHeaderId);
+                    var cartHeaderToRemove = await _context.CartHeaders.FirstOrDefaultAsync(u => u.CartHeaderId == cartDetails.CartHeaderId);
                     _context.CartHeaders.Remove(cartHeaderToRemove);
                 }
                 await _context.SaveChangesAsync();
