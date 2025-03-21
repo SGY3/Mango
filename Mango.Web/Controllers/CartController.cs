@@ -18,7 +18,7 @@ namespace Mango.Web.Controllers
         [Authorize]
         public async Task<IActionResult> CartIndex()
         {
-            return View(await LoadCartDtoBasedOnLoggedInUsaer());
+            return View(await LoadCartDtoBasedOnLoggedInUser());
         }
 
         public async Task<IActionResult> Remove(int cartDetailsid)
@@ -45,6 +45,20 @@ namespace Mango.Web.Controllers
             return View();
         }
         [HttpPost]
+        public async Task<IActionResult> EmailCart(CartDto cartDto)
+        {
+            CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
+            cart.CartHeader.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
+            ResponseDto? reponse = await _cartService.EmailCart(cart);
+
+            if (reponse != null && reponse.IsSuccess)
+            {
+                TempData["success"] = "Email will be processed and send shortly";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            return View();
+        }
+        [HttpPost]
         public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
         {
             cartDto.CartHeader.CouponCode = "";
@@ -57,7 +71,7 @@ namespace Mango.Web.Controllers
             }
             return View();
         }
-        private async Task<CartDto> LoadCartDtoBasedOnLoggedInUsaer()
+        private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
         {
             var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
             ResponseDto? reponse = await _cartService.GetCartByUserIdAsync(userId);
