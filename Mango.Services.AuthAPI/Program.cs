@@ -19,6 +19,19 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
     .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
+
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Allow the React app's origin
+              .AllowAnyHeader()  // Allow all headers
+              .AllowAnyMethod(); // Allow all HTTP methods (GET, POST, etc.)
+    });
+});
+
+
 builder.Services.AddScoped<IJwtTokenGenrator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -40,6 +53,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Use CORS
+app.UseCors("AllowLocalhost");
 ApplyMigration();
 app.Run();
 
