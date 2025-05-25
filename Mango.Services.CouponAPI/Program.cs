@@ -25,6 +25,17 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ResponseDto>();
 builder.Services.AddControllers();
+
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Allow the React app's origin
+              .AllowAnyHeader()  // Allow all headers
+              .AllowAnyMethod(); // Allow all HTTP methods (GET, POST, etc.)
+    });
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -66,8 +77,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Use CORS
+app.UseCors("AllowLocalhost");
 app.MapControllers();
-ApplyMigration();
+//ApplyMigration(); //In publish creating problem;
 app.Run();
 
 void ApplyMigration()

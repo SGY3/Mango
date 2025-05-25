@@ -77,8 +77,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -86,7 +91,7 @@ app.UseAuthorization();
 app.UseCors("AllowLocalhost");
 app.MapControllers();
 
-ApplyMigration();
+//ApplyMigration();
 app.Run();
 
 void ApplyMigration()

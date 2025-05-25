@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -55,7 +55,7 @@ app.MapControllers();
 
 // Use CORS
 app.UseCors("AllowLocalhost");
-ApplyMigration();
+//ApplyMigration();
 app.Run();
 
 void ApplyMigration()

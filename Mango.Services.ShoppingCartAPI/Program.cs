@@ -82,7 +82,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-ApplyMigration();
+//ApplyMigration(); //In Publish commented this;
 app.Run();
 
 void ApplyMigration()
