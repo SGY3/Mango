@@ -8,7 +8,6 @@ namespace Mango.Services.CouponAPI.Extensions
     {
         public static WebApplicationBuilder AddAppAuthentication(this WebApplicationBuilder builder)
         {
-
             var secret = builder.Configuration.GetValue<string>("ApiSettings:Secret");
             var issuer = builder.Configuration.GetValue<string>("ApiSettings:Issuer");
             var audience = builder.Configuration.GetValue<string>("ApiSettings:Audience");

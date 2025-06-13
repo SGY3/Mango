@@ -27,17 +27,28 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<ResponseDto>();
-builder.Services.AddScoped<IProductService,ProductService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
-builder.Services.AddScoped<ICouponService,CouponService>();
-builder.Services.AddScoped<IMessageBus,MessageBus>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
-builder.Services.AddHttpClient("Product", u => u.BaseAddress = 
+builder.Services.AddHttpClient("Product", u => u.BaseAddress =
 new Uri(builder.Configuration["ServiceUrls:ProductAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
-builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = 
-new Uri(builder.Configuration["ServiceUrls:CouponAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>(); ;
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress =
+new Uri(builder.Configuration["ServiceUrls:CouponAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalHost", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Allow the React app's origin
+              .AllowAnyHeader()  // Allow all headers
+              .AllowAnyMethod(); // Allow all HTTP methods (GET, POST, etc.)
+    });
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -76,10 +87,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Use CORS
+app.UseCors("AllowLocalHost");
 app.MapControllers();
 
 //ApplyMigration(); //In Publish commented this;

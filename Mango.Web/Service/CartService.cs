@@ -19,7 +19,7 @@ namespace Mango.Web.Service
             {
                 ApiType = SD.ApiType.POST,
                 Data = cartDto,
-                ApiUrl = SD.ShoppingCartAPIBase + "/api/cart/EmailCartRequest"
+                ApiUrl = SD.ShoppingCartAPIBase + "/api/cart/ApplyCoupon"
 
             });
         }
@@ -29,7 +29,7 @@ namespace Mango.Web.Service
             {
                 ApiType = SD.ApiType.POST,
                 Data = cartDto,
-                ApiUrl = SD.ShoppingCartAPIBase + "/api/cart/ApplyCoupon"
+                ApiUrl = SD.ShoppingCartAPIBase + "/api/cart/EmailCartRequest"
 
             });
         }

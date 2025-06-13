@@ -29,9 +29,10 @@ builder.Services.AddControllers();
 // Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost", policy =>
+    options.AddPolicy("AllowLocalHost", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Allow the React app's origin
+        //policy.WithOrigins("http://localhost:3000") // Allow the React app's origin
+        policy.AllowAnyOrigin() // Allow the React app's origin
               .AllowAnyHeader()  // Allow all headers
               .AllowAnyMethod(); // Allow all HTTP methods (GET, POST, etc.)
     });
@@ -88,7 +89,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Use CORS
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowLocalHost");
 app.MapControllers();
 
 //ApplyMigration();

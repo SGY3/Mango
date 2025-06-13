@@ -80,8 +80,34 @@ namespace Mango.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                var cardFromDb = await _context.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
+                string? couponCode = cartDto?.CartHeader?.CouponCode;
+                if (!string.IsNullOrEmpty(couponCode))
+                {
+                    CouponDto coupon = await _couponService.GetCoupon(couponCode);
+                }
+
+                    var cardFromDb = await _context.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
                 cardFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+                _context.CartHeaders.Update(cardFromDb);
+                await _context.SaveChangesAsync();
+                _response.Result = true;
+            }
+            catch (Exception ex)
+            {
+                _response.Message = ex.Message;
+                _response.IsSuccess = false;
+            }
+            return _response;
+        }
+
+        [HttpPost("RemoveCoupon")]
+        public async Task<ResponseDto> RemoveCoupon([FromBody] CartDto cartDto)
+        {
+            try
+            {
+                var cardFromDb = await _context.CartHeaders.FirstAsync(u => u.UserId == cartDto.CartHeader.UserId);
+                //cardFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+                cardFromDb.CouponCode = "";
                 _context.CartHeaders.Update(cardFromDb);
                 await _context.SaveChangesAsync();
                 _response.Result = true;
